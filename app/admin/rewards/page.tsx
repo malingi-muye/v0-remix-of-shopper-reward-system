@@ -23,12 +23,15 @@ export default function RewardsPage() {
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
 
   useEffect(() => {
-    const session = getSession()
-    if (!session) {
-      router.push("/login")
-      return
+    const checkAuth = async () => {
+      const session = await getSession()
+      if (!session) {
+        router.push("/login")
+        return
+      }
+      setUser(session)
     }
-    setUser(session)
+    checkAuth()
   }, [router])
 
   useEffect(() => {
@@ -199,7 +202,12 @@ export default function RewardsPage() {
             </div>
             <Button
               onClick={handleSendRewards}
-              disabled={selectedRewards.length === 0 || (statusFilter !== "pending" && statusFilter !== "all") || sendingRewards || filteredRewards.filter(r => selectedRewards.includes(r.id) && r.status !== "pending").length > 0}
+              disabled={
+                selectedRewards.length === 0 ||
+                (statusFilter !== "pending" && statusFilter !== "all") ||
+                sendingRewards ||
+                filteredRewards.filter((r) => selectedRewards.includes(r.id) && r.status !== "pending").length > 0
+              }
               className="bg-accent text-accent-foreground hover:bg-accent/90 disabled:opacity-50"
             >
               {sendingRewards
