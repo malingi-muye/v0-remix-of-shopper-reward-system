@@ -22,7 +22,6 @@ export async function getSupabaseSession(): Promise<Session | null> {
 
     if (!session) return null
 
-    // Fetch manager details from managers table
     const { data: manager, error } = await supabase
       .from("managers")
       .select("*")
